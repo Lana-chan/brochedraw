@@ -1,9 +1,15 @@
+// init fastclick
+$(function() {
+  FastClick.attach(document.body);
+});
 
 var app = {
   // Application Constructor
   initialize: function() {
     this.bindEvents();
     
+    //page transition fade é feia
+    $.mobile.defaultPageTransition = "slide";
 
   },
   // Bind Event Listeners
