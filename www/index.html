@@ -1,28 +1,68 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
-        <link rel="stylesheet" type="text/css" href="css/index.css">
-        <title>Hello World</title>
-    </head>
-    <body>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        
-        <center>
-          <canvas id="icon" width="8em" height="8em"></canvas>
-        </center>
-    </body>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.structure-1.4.5.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.theme-1.4.5.min.css">
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script type='application/javascript' src='js/fastclick.js'></script>
+    <script type="text/javascript" src="js/index.js"></script>
+
+    <title>brocheDraw</title>
+  </head>
+  <body>
+    <!-- editor de animação -->    
+    <div data-role="page" id="anim" data-theme="a">
+      <!-- menu -->
+      <div data-role="panel" data-position="left" data-display="push" data-theme="a" id="menu">
+        <ul data-role="listview" class="ui-listview-outer">
+          <li data-theme="b">brocheDraw</li>
+          <li><a href="#anim">Editor de Animação</a></li>
+          <li><a href="#text">Editor de Mensagem</a></li>
+          <li><a href="#">Download do broche</a></li>
+          <li><a href="#">Upload para broche</a></li>
+        </ul>
+      </div>
+      
+      <!-- header -->
+      <div data-role="header" class="header" data-position="fixed" data-theme="b">
+        <a href="#menu" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a>
+        <h1>Editor de Animação</h1>
+      </div>
+      
+      <!-- conteúdo -->
+      <center>
+        <canvas id="icon" width="8em" height="8em"></canvas>
+      </center>
+    </div>
+    
+    <!-- editor de mensagem -->
+    <div data-role="page" id="text" data-theme="a">
+      <!-- menu -->
+      <div data-role="panel" data-position="left" data-display="push" data-theme="a" id="menu">
+        <ul data-role="listview" class="ui-listview-outer">
+          <li data-theme="b">brocheDraw</li>
+          <li><a href="#anim">Editor de Animação</a></li>
+          <li><a href="#text">Editor de Mensagem</a></li>
+          <li><a href="#">Download do broche</a></li>
+          <li><a href="#">Upload para broche</a></li>
+        </ul>
+      </div>
+      
+      <!-- header -->
+      <div data-role="header" class="header" data-position="fixed" data-theme="b">
+        <a href="#menu" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a>
+        <h1>Editor de Mensagem</h1>
+      </div>
+    
+      <!-- conteúdo -->
+    </div>
+  </body>
 </html>
