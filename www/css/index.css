@@ -8,3 +8,24 @@ body {
   -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
 }
 
+
+
+.pixel {
+  width: 1.5em;
+  height: 1.5em;
+  border: solid 1 1 1 1 #333;
+  background-color: #111;
+}
+
+#screen-table {
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+}
+
+#screen {
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+  width: auto;
+}

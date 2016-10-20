@@ -39,8 +39,95 @@
       <div data-role="content">
         <h2>Esta é a animação que irá aparecer no modo padrão do broche.</h2>
         
-        <label for="anim-frames">Número de quadros:</label>
-        <input name="anim-frames" id="anim-frames" min="1" max="15" value="1" type="range" data-highlight="true">
+        <div id="screen">
+          <table id="screen-table">
+            <tr class="row1">
+              <td class="pixel col1"></td>
+              <td class="pixel col2"></td>
+              <td class="pixel col3"></td>
+              <td class="pixel col4"></td>
+              <td class="pixel col5"></td>
+              <td class="pixel col6"></td>
+              <td class="pixel col7"></td>
+              <td class="pixel col8"></td>
+            </tr>
+            <tr class="row2">
+              <td class="pixel col1"></td>
+              <td class="pixel col2"></td>
+              <td class="pixel col3"></td>
+              <td class="pixel col4"></td>
+              <td class="pixel col5"></td>
+              <td class="pixel col6"></td>
+              <td class="pixel col7"></td>
+              <td class="pixel col8"></td>
+            </tr>
+            <tr class="row3">
+              <td class="pixel col1"></td>
+              <td class="pixel col2"></td>
+              <td class="pixel col3"></td>
+              <td class="pixel col4"></td>
+              <td class="pixel col5"></td>
+              <td class="pixel col6"></td>
+              <td class="pixel col7"></td>
+              <td class="pixel col8"></td>
+            </tr>
+            <tr class="row4">
+              <td class="pixel col1"></td>
+              <td class="pixel col2"></td>
+              <td class="pixel col3"></td>
+              <td class="pixel col4"></td>
+              <td class="pixel col5"></td>
+              <td class="pixel col6"></td>
+              <td class="pixel col7"></td>
+              <td class="pixel col8"></td>
+            </tr>
+            <tr class="row5">
+              <td class="pixel col1"></td>
+              <td class="pixel col2"></td>
+              <td class="pixel col3"></td>
+              <td class="pixel col4"></td>
+              <td class="pixel col5"></td>
+              <td class="pixel col6"></td>
+              <td class="pixel col7"></td>
+              <td class="pixel col8"></td>
+            </tr>
+            <tr class="row6">
+              <td class="pixel col1"></td>
+              <td class="pixel col2"></td>
+              <td class="pixel col3"></td>
+              <td class="pixel col4"></td>
+              <td class="pixel col5"></td>
+              <td class="pixel col6"></td>
+              <td class="pixel col7"></td>
+              <td class="pixel col8"></td>
+            </tr>
+            <tr class="row7">
+              <td class="pixel col1"></td>
+              <td class="pixel col2"></td>
+              <td class="pixel col3"></td>
+              <td class="pixel col4"></td>
+              <td class="pixel col5"></td>
+              <td class="pixel col6"></td>
+              <td class="pixel col7"></td>
+              <td class="pixel col8"></td>
+            </tr>
+            <tr class="row8">
+              <td class="pixel col1"></td>
+              <td class="pixel col2"></td>
+              <td class="pixel col3"></td>
+              <td class="pixel col4"></td>
+              <td class="pixel col5"></td>
+              <td class="pixel col6"></td>
+              <td class="pixel col7"></td>
+              <td class="pixel col8"></td>
+            </tr>
+          </table>
+        </div>
+        
+        <label for="anim-frame">Quadro atual:</label>
+        <input name="anim-frame" id="anim-frame" min="1" max="1" value="1" type="range" data-highlight="true">        
+        <label for="anim-frame-count">Número de quadros:</label>
+        <input name="anim-frame-count" id="anim-frame-count" min="1" max="15" value="1" type="range" data-highlight="true">
         <label for="anim-speed">Velocidade:</label>
         <input name="anim-speed" id="anim-speed" min="0" max="255" value="10" type="range" data-highlight="true">
       </div>
@@ -58,10 +145,10 @@
       <div data-role="content">
         <h2>Esta é a mensagem que irá aparecer no modo "ticker" do broche.</h2>
         <!-- entrada de texto -->
-        <label for="msg-text">Mensagem:</label>
-        <input data-clear-btn="true" name="usermsg" id="usermsg" value="" placeholder="Insira sua mensagem aqui" type="text">
-        <label for="msg-wrap">Marque aqui para incluir um marcador de "wrap" na mensagem</label>
-        <input name="msg-wrap" id="msg-wrap" type="checkbox">
+        <label for="text-msg">Mensagem:</label>
+        <input data-clear-btn="true" name="text-msg" id="text-msg" value="" placeholder="Insira sua mensagem aqui" type="text">
+        <label for="text-wrap">Marque aqui para incluir um marcador de "wrap" na mensagem</label>
+        <input name="text-wrap" id="text-wrap" type="checkbox">
       </div>
     </div>
 
@@ -76,6 +163,7 @@
       <!-- conteúdo -->
       <div data-role="content">
         <h2>Aqui você pode transferir as configurações de, e para, o Broche Hacker.</h2>
+        <p>Para executar essas operações, o broche deve estar em modo serial, segurando o primeiro botão enquanto é ligado.</p>
         <fieldset data-role="controlgroup">
           <legend>Atualizar apenas:</legend>
           <label for="xfer-anim">Animação</label>
@@ -83,8 +171,8 @@
           <label for="xfer-text">Mensagem</label>
           <input name="xfer-text" id="xfer-text" type="checkbox" checked>
         </fieldset>
-        <button id="download" onclick="brocheData.download();">Baixar config do broche</button>
-        <button id="upload" onclick="brocheData.upload();">Subir config para broche</button>
+        <button id="download" onclick="broche.download();">Baixar config do broche</button>
+        <button id="upload" onclick="broche.upload();">Subir config para broche</button>
       </div>
     </div>
   </body>
