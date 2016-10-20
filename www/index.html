@@ -4,10 +4,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"> 
 
-    <link rel="stylesheet" type="text/css" href="css/index.css">
-    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.structure-1.4.5.min.css">
     <link rel="stylesheet" href="themes/brocheDraw.min.css" />
     <link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile.structure-1.4.5.min.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
@@ -17,51 +17,74 @@
     <title>brocheDraw</title>
   </head>
   <body>
+    <!-- menu -->
+    <div data-role="panel" data-position="left" data-display="push" id="menu" data-theme="a">
+      <ul data-role="listview" class="ui-listview-outer">
+        <li>brocheDraw</li>
+        <li><a href="#anim">Editor de Animação</a></li>
+        <li><a href="#text">Editor de Mensagem</a></li>
+        <li><a href="#xfer">Download/Upload</a></li>
+      </ul>
+    </div>
+    
     <!-- editor de animação -->    
     <div data-role="page" id="anim" data-theme="a">
-      <!-- menu -->
-      <div data-role="panel" data-position="left" data-display="push" id="anim-menu">
-        <ul data-role="listview" class="ui-listview-outer">
-          <li data-theme="b">brocheDraw</li>
-          <li><a href="#text">Editor de Mensagem</a></li>
-          <li><a href="#">Download do broche</a></li>
-          <li><a href="#">Upload para broche</a></li>
-        </ul>
-      </div>
-      
       <!-- header -->
       <div data-role="header" class="header" data-position="fixed">
-        <a href="#anim-menu" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a>
+        <a href="#menu" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a>
         <h1>Animação</h1>
       </div>
       
       <!-- conteúdo -->
       <div data-role="content">
-        <h1>hai</h1>
+        <h2>Esta é a animação que irá aparecer no modo padrão do broche.</h2>
+        
+        <label for="anim-frames">Número de quadros:</label>
+        <input name="anim-frames" id="anim-frames" min="1" max="15" value="1" type="range" data-highlight="true">
+        <label for="anim-speed">Velocidade:</label>
+        <input name="anim-speed" id="anim-speed" min="0" max="255" value="10" type="range" data-highlight="true">
       </div>
     </div>
     
     <!-- editor de mensagem -->
     <div data-role="page" id="text" data-theme="a">
-      <!-- menu -->
-      <div data-role="panel" data-position="left" data-display="push" id="text-menu">
-        <ul data-role="listview" class="ui-listview-outer">
-          <li data-theme="b">brocheDraw</li>
-          <li><a href="#anim">Editor de Animação</a></li>
-          <li><a href="#">Download do broche</a></li>
-          <li><a href="#">Upload para broche</a></li>
-        </ul>
-      </div>
-      
       <!-- header -->
       <div data-role="header" class="header" data-position="fixed">
-        <a href="#text-menu" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a>
+        <a href="#menu" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a>
         <h1>Mensagem</h1>
       </div>
     
       <!-- conteúdo -->
       <div data-role="content">
-        <h1>hai</h1>
+        <h2>Esta é a mensagem que irá aparecer no modo "ticker" do broche.</h2>
+        <!-- entrada de texto -->
+        <label for="msg-text">Mensagem:</label>
+        <input data-clear-btn="true" name="usermsg" id="usermsg" value="" placeholder="Insira sua mensagem aqui" type="text">
+        <label for="msg-wrap">Marque aqui para incluir um marcador de "wrap" na mensagem</label>
+        <input name="msg-wrap" id="msg-wrap" type="checkbox">
+      </div>
+    </div>
+
+    <!-- página de transferência -->
+    <div data-role="page" id="xfer" data-theme="a">
+      <!-- header -->
+      <div data-role="header" class="header" data-position="fixed">
+        <a href="#menu" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a>
+        <h1>Transferência</h1>
+      </div>
+    
+      <!-- conteúdo -->
+      <div data-role="content">
+        <h2>Aqui você pode transferir as configurações de, e para, o Broche Hacker.</h2>
+        <fieldset data-role="controlgroup">
+          <legend>Atualizar apenas:</legend>
+          <label for="xfer-anim">Animação</label>
+          <input name="xfer-anim" id="xfer-anim" type="checkbox" checked>
+          <label for="xfer-text">Mensagem</label>
+          <input name="xfer-text" id="xfer-text" type="checkbox" checked>
+        </fieldset>
+        <button id="download" onclick="brocheData.download();">Baixar config do broche</button>
+        <button id="upload" onclick="brocheData.upload();">Subir config para broche</button>
       </div>
     </div>
   </body>

@@ -3,6 +3,19 @@ $(function() {
   FastClick.attach(document.body);
 });
 
+// external panels
+$(function () {
+    //$("[data-role=header],[data-role=footer]").toolbar().enhanceWithin();
+    $("[data-role=panel]").panel().enhanceWithin();
+});
+
+/*$(document).on("pagecreate", function () {
+    $("[data-role=panel]").one("panelbeforeopen", function () {
+        var height = $.mobile.pageContainer.pagecontainer("getActivePage").outerHeight();
+        $(".ui-panel-wrapper").css("height", height + 1);
+    });
+});*/
+
 var app = {
   // Application Constructor
   initialize: function() {
