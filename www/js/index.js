@@ -12,9 +12,19 @@ function onDeviceReady() {
 $(function () {
   //$("[data-role=header],[data-role=footer]").toolbar().enhanceWithin();
   $("[data-role=panel]").panel().enhanceWithin();
-  broche.initializeAnim();
+  broche.initialize();
   draw.initialize();
+  widgets.initialize();
 });
+
+var widgets = {
+  initialize: function() {
+    // atualiza slider de quadro atual quando número de quadros muda
+    $("#anim-frame-count").change(function() {
+      $("#anim-frame").attr("max", $("#anim-frame-count").val()).slider('refresh');
+    });
+  }
+}
 
 // brocheDraw
 
@@ -29,7 +39,7 @@ var broche = {
   },
   
   // inicializa matriz 2d * págs para guardar animação
-  initializeAnim: function() {
+  initialize: function() {
     
   },
   
@@ -93,9 +103,6 @@ var broche = {
 
 var draw = {
   initialize: function() {
-    console.log("ogij");
-    $("#screen-table").on("vmousedown", function() {
-      console.log("asdfg");
-    });
+    
   }
 };
