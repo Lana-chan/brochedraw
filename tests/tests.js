@@ -1,15 +1,22 @@
-var html_fixture = "../www/index.html";
-var sources = ["./assert.js"];
-var tests = [];
-
-tests.push(function max_frame_increase () {
-    document.getElementsById('anim-frame-count')[0].value = 6;
-    setTimeout(function() {
-      assert(document.getElementsById('anim-frame').slider("option", "max"), 6);
-    }, 100);
-})
-
-/*tests.push(function max_frame_clamp () {
-    assert(document.getElementsByClassName('chart')[0].id,
-        "chart_60eb0dc5-6b41-4ca1-94d0-1760c1f3d87b");
-})*/
+casper.test.begin("Atualização de valor máximo de quadros", 2, function(test) {
+  casper.start('www/index.html', function() {
+    this.echo("Mudando número de quadros para 6");
+    this.fill("form#anim-form", {
+      "anim-frame-count": 6
+    }, false);
+    this.echo("Valor máximo para quadro deve ser 6 agora");
+    var value = this.getElementAttribute('#anim-frame', 'max');
+    test.assertEquals(value, "6");
+    this.echo("Mudando quadro para 6");
+    this.fill("form#anim-form", {
+      "anim-frame": 6
+    }, false);
+    this.echo("Mudando número de quadros para 4");
+    this.fill("form#anim-form", {
+      "anim-frame-count": 4
+    }, false);
+    test.assertEquals(value, "4");
+  }).run(function() {
+    test.done();
+  });
+});
