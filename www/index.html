@@ -166,7 +166,7 @@
       <!-- conteúdo -->
       <div data-role="content">
         <h2>Aqui você pode transferir as configurações de, e para, o Broche Hacker.</h2>
-        <p>Para executar essas operações, o broche deve estar em modo serial, segurando o primeiro botão enquanto é ligado.</p>
+        <p>Para executar essas operações, o broche deve estar em modo serial.</p>
         <fieldset data-role="controlgroup">
           <legend>Atualizar apenas:</legend>
           <label for="xfer-anim">Animação</label>
@@ -174,8 +174,9 @@
           <label for="xfer-text">Mensagem</label>
           <input name="xfer-text" id="xfer-text" type="checkbox" checked>
         </fieldset>
-        <button id="download" onclick="broche.download();">Baixar config do broche</button>
-        <button id="upload" onclick="broche.upload();">Subir config para broche</button>
+        <button id="connect" onclick="comms.connect();">Conectar ao broche</button>
+        <button id="download" onclick="comms.download();">Baixar config do broche</button>
+        <button id="upload" onclick="comms.upload();">Subir config para broche</button>
       </div>
     </div>
   </body>

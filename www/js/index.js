@@ -33,63 +33,15 @@ var broche = {
   
   // monta mensagem para envio serial
   msg: function() {    
-    msg = "T" + $("#text-msg").value;
-    if($("#text-wrap").is(":checked")) msg = msg + " ... ";
+    msg = "T" + $("#text-msg").val();
+    if($("#text-wrap").is(":checked") == true) msg = msg + " ... ";
+    msg = msg + "\n";
     return msg;
   },
   
   // inicializa matriz 2d * págs para guardar animação
   initialize: function() {
     
-  },
-  
-  // função callback de falha na serial  
-  serialFail: function() {
-    alert("Não foi possível estabelecer comunicação serial!");
-  },
-  
-  // função callback de sucesso ao conectar serial para subir
-  upSuccess: function() {
-    serial.open({baudRate: 9600},
-      function() {
-        if($("#xfer-anim").is(":checked")) {
-        
-        }
-        if($("#xfer-text").is(":checked")) {
-          serial.write(this.msg,
-            function() {
-              serial.writeHex('10',
-                function succes() {
-                  alert("Sucesso!");
-                  serial.write("SQ");
-                },
-                this.serialFail
-              );
-            },
-            this.serialFail
-          );
-        }
-      },
-      this.serialFail
-    );
-  },
-  
-  // função chamada ao clicar subir
-  upload: function() {
-    if($("#xfer-anim").is(":checked") == false && $("#xfer-text").is(":checked") == false) {
-      alert("Não há nada selecionado para subir!");
-    } else {
-      serial.requestPermission(this.upSuccess, this.serialFail);
-    }
-  },
-  
-  // função chamada ao clicar baixar
-  download: function() {
-    if($("#xfer-anim").is(":checked") == false && $("#xfer-text").is(":checked") == false) {
-      alert("Não há nada selecionado para baixar!");
-    } else {
-    
-    }
   },
   
   // atualiza animação ao mudar widget
@@ -100,6 +52,69 @@ var broche = {
   updateToWidgets: function() {
   }
 };
+
+// serial comms
+var comms = {
+  // função callback de falha na serial  
+  serialFail: function() {
+    alert("Não foi possível estabelecer comunicação serial!");
+  },
+  
+  // status
+  connected: false,
+
+  // função para conectar
+  connect: function() {
+    console.log("requesting permission");
+    serial.requestPermission({vid: '2341', pid: '0043'},
+      function() {
+        console.log("opening serial");
+        serial.open({baudRate: 9600},
+          function() {
+            alert("Conectado!");
+            comms.connected = true;
+          },
+          this.serialFail
+        );
+      },
+      this.serialFail
+    );
+  },
+  
+  // função chamada ao clicar subir
+  upload: function() {
+    if(comms.connected == false) {
+      alert("O broche não está conectado!");
+    } else {
+      if($("#xfer-anim").is(":checked") == false && $("#xfer-text").is(":checked") == false) {
+        alert("Não há nada selecionado para subir!");
+      } else {
+        if($("#xfer-anim").is(":checked") == true) {
+          console.log("sending anim");
+          // TODO: código para subir binary anim
+        }
+        if($("#xfer-text").is(":checked") == true) {
+          console.log("sending text");
+          console.log(broche.msg());
+          serial.write(broche.msg());
+        }
+        serial.write("SQ");
+        alert("Upload realizado! Broche reiniciando...");
+      }
+    }
+  },
+  
+  // função chamada ao clicar baixar
+  download: function() {
+    if(!comms.connected) {
+      alert("O broche não está conectado!");
+    } else if($("#xfer-anim").is(":checked") == false && $("#xfer-text").is(":checked") == false) {
+      alert("Não há nada selecionado para baixar!");
+    } else {
+    
+    }
+  }
+}
 
 var draw = {
   initialize: function() {
