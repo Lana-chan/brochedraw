@@ -1,27 +1,32 @@
-// init fastclick
-$(function() {
-  FastClick.attach(document.body);
-});
-
 document.addEventListener('deviceready', onDeviceReady, false);
 function onDeviceReady() {
   
 }
 
-// external panels
 $(function () {
+  // init fastclick
+  FastClick.attach(document.body);
+
+  // external panels
   //$("[data-role=header],[data-role=footer]").toolbar().enhanceWithin();
   $("[data-role=panel]").panel().enhanceWithin();
-  broche.initialize();
   draw.initialize();
   widgets.initialize();
 });
 
 var widgets = {
+  frame: 1,
+  
   initialize: function() {
     // atualiza slider de quadro atual quando número de quadros muda
     $("#anim-frame-count").change(function() {
       $("#anim-frame").attr("max", $("#anim-frame-count").val()).slider('refresh');
+    });
+    
+    // atualiza quadro atual
+    $("#anim-frame").change(function() {
+      widgets.frame = $("#anim-frame").val();
+      draw.updateFromWidgets();
     });
   }
 }
@@ -29,8 +34,6 @@ var widgets = {
 // brocheDraw
 
 var broche = {
-  anim: [],
-  
   // monta mensagem para envio serial
   msg: function() {    
     msg = "T" + $("#text-msg").val();
@@ -38,19 +41,6 @@ var broche = {
     msg = msg + "\n";
     return msg;
   },
-  
-  // inicializa matriz 2d * págs para guardar animação
-  initialize: function() {
-    
-  },
-  
-  // atualiza animação ao mudar widget
-  updateFromWidgets: function() { 
-  },
-  
-  // atualiza widget ao carregar nova animação
-  updateToWidgets: function() {
-  }
 };
 
 // serial comms
@@ -58,6 +48,7 @@ var comms = {
   // função callback de falha na serial  
   serialFail: function() {
     alert("Não foi possível estabelecer comunicação serial!");
+    comms.connected = false;
   },
   
   // status
@@ -117,7 +108,81 @@ var comms = {
 }
 
 var draw = {
+  // guarda informação dos quadros
+  frames: [],
+  // status = false if wasn't drawing before, true if is drawing
+  drawStatus: false,
+  // state = the state next drawn pixels get
+  state: false,
+
+  // inicializa funções de desenho
   initialize: function() {
-    
+    for(i = 1; i < 15; i++) {
+      this.frames[i] = {};
+    }
+    $("body").mouseup(this.unclickPixel);
+    $(".pixel").mousedown(this.clickPixel);
+    $(".pixel").mouseenter(this.slidePixel);
+  },
+  
+  // levanta o clique
+  unclickPixel: function(e) {
+    draw.drawStatus = false;
+  },
+  
+  // clica num pixel
+  clickPixel: function(e) {
+    draw.drawStatus = true;
+    if(draw.frames[widgets.frame][e.target.id] == true) {
+      draw.state = false;
+      draw.turnOff(e.target.id);
+    } else {
+      draw.state = true;
+      draw.turnOn(e.target.id);
+    }
+    //draw.frame[1].
+  },
+  
+  // função chamada quando desliza sobre um pixel
+  slidePixel: function(e) {
+    if(draw.drawStatus == true) {
+      if(draw.state == true) {
+        draw.turnOn(e.target.id);
+      } else {
+        draw.turnOff(e.target.id);
+      }
+    }
+  },
+  
+  // liga pixel
+  turnOn: function(id) {
+    draw.frames[widgets.frame][id] = true;
+    $('#'+id).addClass('on').removeClass('off');
+  },
+  
+  // desliga pixel
+  turnOff: function(id) {
+    delete draw.frames[widgets.frame][id];
+    $('#'+id).addClass('off').removeClass('on');
+  },
+  
+  // limpa frame
+  clearFrame: function() {
+    draw.frames[widgets.frame] = {};
+    $('.pixel').addClass('off').removeClass('on');
+  },
+  
+  // atualiza animação ao mudar widget
+  updateFromWidgets: function() {
+    $('.pixel').addClass('off').removeClass('on');
+    var frame = draw.frames[widgets.frame];
+    for(var id in frame)
+      if(frame.hasOwnProperty(id))
+        $('#'+id).addClass('on').removeClass('off');
+  },
+  
+  // atualiza widget ao carregar nova animação
+  updateFromComms: function() {
   }
+
 };
