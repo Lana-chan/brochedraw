@@ -14,6 +14,24 @@ $(function () {
   widgets.initialize();
 });
 
+// brocheDraw
+
+// funções de conversão
+var broche = {
+  // monta mensagem para envio serial
+  msg: function() {    
+    msg = "T" + $("#text-msg").val();
+    if($("#text-wrap").is(":checked") == true) msg = msg + " ... ";
+    msg = msg + "\n";
+    return msg;
+  },
+  
+  anim: function() {
+    
+  }
+};
+
+// controladores dos widgets do app
 var widgets = {
   frame: 1,
   
@@ -26,22 +44,24 @@ var widgets = {
     // atualiza quadro atual
     $("#anim-frame").change(function() {
       widgets.frame = $("#anim-frame").val();
-      draw.updateFromWidgets();
+      this.updateDraw();
     });
+  },
+  
+  // atualiza animação a partir do armazenado
+  updateDraw: function() {
+    $('.pixel').addClass('off').removeClass('on');
+    var frame = draw.frames[widgets.frame];
+    for(var id in frame)
+      if(frame.hasOwnProperty(id))
+        $('#'+id).addClass('on').removeClass('off');
+  },
+  
+  // atualiza textbox ao carregar mensagem
+  updateText: function() {
+    // TODO
   }
 }
-
-// brocheDraw
-
-var broche = {
-  // monta mensagem para envio serial
-  msg: function() {    
-    msg = "T" + $("#text-msg").val();
-    if($("#text-wrap").is(":checked") == true) msg = msg + " ... ";
-    msg = msg + "\n";
-    return msg;
-  },
-};
 
 // serial comms
 var comms = {
@@ -90,7 +110,7 @@ var comms = {
           serial.write(broche.msg());
         }
         serial.write("SQ");
-        alert("Upload realizado! Broche reiniciando...");
+        alert("Upload realizado! O broche irá reiniciar.");
       }
     }
   },
@@ -99,10 +119,12 @@ var comms = {
   download: function() {
     if(!comms.connected) {
       alert("O broche não está conectado!");
-    } else if($("#xfer-anim").is(":checked") == false && $("#xfer-text").is(":checked") == false) {
-      alert("Não há nada selecionado para baixar!");
     } else {
-    
+      if($("#xfer-anim").is(":checked") == false && $("#xfer-text").is(":checked") == false) {
+        alert("Não há nada selecionado para baixar!");
+      } else {
+        // TODO
+      }
     }
   }
 }
@@ -120,14 +142,10 @@ var draw = {
     for(i = 1; i < 15; i++) {
       this.frames[i] = {};
     }
+    
     $("body").on('vmouseup', this.unclickPixel);
     $(".pixel").on('vmousedown', this.clickPixel);
-    $(".pixel").on('vmouseenter', this.slidePixel);
-    
-    // ignore scroll quando desenha
-    $(window).on('touchmove', function(e) {
-      if(draw.drawStatus == true) e.preventDefault();
-    });
+    $(window).on('touchmove', this.slidePixel);
   },
   
   // levanta o clique
@@ -151,11 +169,15 @@ var draw = {
   // função chamada quando desliza sobre um pixel
   slidePixel: function(e) {
     if(draw.drawStatus == true) {
-      if(draw.state == true) {
-        draw.turnOn(e.target.id);
-      } else {
-        draw.turnOff(e.target.id);
+      console.log(e.target);
+      if($(e.target).hasClass('pixel')) {
+        if(draw.state == true) {
+          draw.turnOn(e.target.id);
+        } else {
+          draw.turnOff(e.target.id);
+        }
       }
+      e.preventDefault();
     }
   },
   
@@ -175,19 +197,5 @@ var draw = {
   clearFrame: function() {
     draw.frames[widgets.frame] = {};
     $('.pixel').addClass('off').removeClass('on');
-  },
-  
-  // atualiza animação ao mudar widget
-  updateFromWidgets: function() {
-    $('.pixel').addClass('off').removeClass('on');
-    var frame = draw.frames[widgets.frame];
-    for(var id in frame)
-      if(frame.hasOwnProperty(id))
-        $('#'+id).addClass('on').removeClass('off');
-  },
-  
-  // atualiza widget ao carregar nova animação
-  updateFromComms: function() {
   }
-
 };

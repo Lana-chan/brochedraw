@@ -125,7 +125,9 @@
           </table>
         </div>
         
-        <button id="clear" onclick="draw.clearFrame();">Limpar quadro</button>
+        <center>
+          <button data-mini="true" data-inline="true" id="clear" onclick="draw.clearFrame();">Limpar quadro</button>
+        </center>
         <label for="anim-frame">Quadro atual:</label>
         <input name="anim-frame" id="anim-frame" min="1" max="1" value="1" type="range" data-highlight="true">        
         <label for="anim-frame-count">Número de quadros:</label>
@@ -146,6 +148,7 @@
       <!-- conteúdo -->
       <div data-role="content">
         <h2>Esta é a mensagem que irá aparecer no modo "ticker" do broche.</h2>
+        
         <!-- entrada de texto -->
         <label for="text-msg">Mensagem:</label>
         <input data-clear-btn="true" name="text-msg" id="text-msg" value="" placeholder="Insira sua mensagem aqui" type="text">
@@ -166,6 +169,7 @@
       <div data-role="content">
         <h2>Aqui você pode transferir as configurações de, e para, o Broche Hacker.</h2>
         <p>Para executar essas operações, o broche deve estar em modo serial.</p>
+        
         <fieldset data-role="controlgroup">
           <legend>Atualizar apenas:</legend>
           <label for="xfer-anim">Animação</label>
