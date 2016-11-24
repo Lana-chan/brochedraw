@@ -120,9 +120,14 @@ var draw = {
     for(i = 1; i < 15; i++) {
       this.frames[i] = {};
     }
-    $("body").mouseup(this.unclickPixel);
-    $(".pixel").mousedown(this.clickPixel);
-    $(".pixel").mouseenter(this.slidePixel);
+    $("body").on('vmouseup', this.unclickPixel);
+    $(".pixel").on('vmousedown', this.clickPixel);
+    $(".pixel").on('vmouseenter', this.slidePixel);
+    
+    // ignore scroll quando desenha
+    $(window).on('touchmove', function(e) {
+      if(draw.drawStatus == true) e.preventDefault();
+    });
   },
   
   // levanta o clique
