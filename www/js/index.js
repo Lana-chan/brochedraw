@@ -14,6 +14,16 @@ $(function () {
   widgets.initialize();
 });
 
+function pad(n, width, z) {
+  z = z || '0';
+  n = n + '';
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
+function hexByte(n) {
+  return pad(n.toString(16), 2);
+}
+
 // brocheDraw
 
 // funções de conversão
@@ -27,24 +37,50 @@ var broche = {
   },
   
   anim: function() {
+    var size = hexByte(widgets.frameCount);
+    var speed = hexByte(widgets.speed);
+    var framedata = '';
     
+    for(var i = 1; i <= widgets.frameCount; i++) {
+      var frame = draw.frames[i];
+      for(var y = 1; y <= 8; y++) {
+        var b = 0;
+        for(var x = 1; x <= 8; x++) {
+          var sx = pad(x, 2);
+          var sy = pad(y, 2);
+          if(frame[sy + sx] == true)
+            b += Math.pow(2, 8-x);
+        }
+        framedata += hexByte(b);
+      }
+    }
+    
+    var out = "A".charCodeAt(0) + size + speed + framedata;
+    return out;
   }
 };
 
 // controladores dos widgets do app
 var widgets = {
   frame: 1,
+  frameCount: 1,
+  speed: 10,
   
   initialize: function() {
     // atualiza slider de quadro atual quando número de quadros muda
     $("#anim-frame-count").change(function() {
+      widgets.frameCount = parseInt($("#anim-frame-count").val());
       $("#anim-frame").attr("max", $("#anim-frame-count").val()).slider('refresh');
     });
     
     // atualiza quadro atual
     $("#anim-frame").change(function() {
-      widgets.frame = $("#anim-frame").val();
-      this.updateDraw();
+      widgets.frame = parseInt($("#anim-frame").val());
+      widgets.updateDraw();
+    });
+    
+    $("#anim-speed").change(function() {
+      widgets.speed = parseInt($("#anim-speed").val());
     });
   },
   
@@ -102,7 +138,8 @@ var comms = {
       } else {
         if($("#xfer-anim").is(":checked") == true) {
           console.log("sending anim");
-          // TODO: código para subir binary anim
+          console.log(broche.anim());
+          serial.writeHex(broche.anim());
         }
         if($("#xfer-text").is(":checked") == true) {
           console.log("sending text");
@@ -145,7 +182,7 @@ var draw = {
     
     $("body").on('vmouseup', this.unclickPixel);
     $(".pixel").on('vmousedown', this.clickPixel);
-    $(window).on('touchmove', this.slidePixel);
+    $(".pixel").on('vmouseover', this.slidePixel);
   },
   
   // levanta o clique
@@ -164,12 +201,12 @@ var draw = {
       draw.turnOn(e.target.id);
     }
     //draw.frame[1].
+    e.stopPropagation();
   },
   
   // função chamada quando desliza sobre um pixel
   slidePixel: function(e) {
     if(draw.drawStatus == true) {
-      console.log(e.target);
       if($(e.target).hasClass('pixel')) {
         if(draw.state == true) {
           draw.turnOn(e.target.id);
