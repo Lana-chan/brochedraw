@@ -55,7 +55,7 @@ var broche = {
       }
     }
     
-    var out = "A".charCodeAt(0) + size + speed + framedata;
+    var out = hexByte("A".charCodeAt(0)) + size + speed + framedata;
     return out;
   }
 };
