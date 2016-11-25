@@ -5,7 +5,7 @@ function onDeviceReady() {
 
 $(function () {
   // init fastclick
-  FastClick.attach(document.body);
+  //FastClick.attach(document.body);
 
   // external panels
   //$("[data-role=header],[data-role=footer]").toolbar().enhanceWithin();
@@ -30,8 +30,8 @@ function hexByte(n) {
 var broche = {
   // monta mensagem para envio serial
   msg: function() {    
-    msg = "T" + $("#text-msg").val();
-    if($("#text-wrap").is(":checked") == true) msg = msg + " ... ";
+    msg = "T" + widgets.msg;
+    if(widgets.wrap == true) msg = msg + " ... ";
     msg = msg + "\n";
     return msg;
   },
@@ -65,6 +65,8 @@ var widgets = {
   frame: 1,
   frameCount: 1,
   speed: 10,
+  msg: '',
+  wrap: false,
   
   initialize: function() {
     // atualiza slider de quadro atual quando número de quadros muda
@@ -79,9 +81,9 @@ var widgets = {
       widgets.updateDraw();
     });
     
-    $("#anim-speed").change(function() {
-      widgets.speed = parseInt($("#anim-speed").val());
-    });
+    $("#anim-speed").change(function() { widgets.speed = parseInt($("#anim-speed").val()); });
+    $("#text-msg").change(function() { widgets.msg = $("#text-msg").val(); });
+    $("#text-wrap").change(function() { widgets.wrap = $("#text-wrap").is(":checked"); });
   },
   
   // atualiza animação a partir do armazenado
@@ -95,7 +97,8 @@ var widgets = {
   
   // atualiza textbox ao carregar mensagem
   updateText: function() {
-    // TODO
+    $("#text-msg").val(widgets.msg);
+    $("#text-wrap").prop('checked', widgets.wrap).checkboxradio('refresh');
   }
 }
 
@@ -180,14 +183,9 @@ var draw = {
       this.frames[i] = {};
     }
     
-    $("body").on('vmouseup', this.unclickPixel);
-    $(".pixel").on('vmousedown', this.clickPixel);
-    $(".pixel").on('vmouseover', this.slidePixel);
-  },
-  
-  // levanta o clique
-  unclickPixel: function(e) {
-    draw.drawStatus = false;
+    $(".pixel").on('touchstart', this.clickPixel);
+    $(window).on('touchmove', this.slidePixel);
+    $(window).on('touchend', this.unclickPixel);
   },
   
   // clica num pixel
@@ -200,22 +198,28 @@ var draw = {
       draw.state = true;
       draw.turnOn(e.target.id);
     }
-    //draw.frame[1].
-    e.stopPropagation();
   },
   
   // função chamada quando desliza sobre um pixel
   slidePixel: function(e) {
     if(draw.drawStatus == true) {
-      if($(e.target).hasClass('pixel')) {
+      var xPos = e.originalEvent.touches[0].pageX;
+      var yPos = e.originalEvent.touches[0].pageY;
+      var element = document.elementFromPoint(xPos,yPos);
+      if($(element).hasClass('pixel') == true) {
         if(draw.state == true) {
-          draw.turnOn(e.target.id);
+          draw.turnOn(element.id);
         } else {
-          draw.turnOff(e.target.id);
+          draw.turnOff(element.id);
         }
       }
       e.preventDefault();
     }
+  },
+  
+  // levanta o clique
+  unclickPixel: function(e) {
+    draw.drawStatus = false;
   },
   
   // liga pixel
