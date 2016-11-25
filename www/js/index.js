@@ -5,7 +5,7 @@ function onDeviceReady() {
 
 $(function () {
   // init fastclick
-  //FastClick.attach(document.body);
+  FastClick.attach(document.body);
 
   // external panels
   //$("[data-role=header],[data-role=footer]").toolbar().enhanceWithin();
@@ -93,6 +93,9 @@ var widgets = {
     for(var id in frame)
       if(frame.hasOwnProperty(id))
         $('#'+id).addClass('on').removeClass('off');
+        
+    $('#anim-frame-count').val(widgets.frameCount).slider('refresh');
+    $('#anim-speed').val(widgets.speed).slider('refresh');
   },
   
   // atualiza textbox ao carregar mensagem
@@ -112,6 +115,11 @@ var comms = {
   
   // status
   connected: false,
+  
+  // dump buffer
+  receiving: false,
+  dump: [],
+  dumpFound: false,
 
   // função para conectar
   connect: function() {
@@ -129,6 +137,12 @@ var comms = {
       },
       this.serialFail
     );
+  },
+  
+  // desconectar
+  disconnect: function() {
+    serial.close();
+    comms.connected = false;
   },
   
   // função chamada ao clicar subir
@@ -151,6 +165,7 @@ var comms = {
         }
         serial.write("SQ");
         alert("Upload realizado! O broche irá reiniciar.");
+        comms.disconnect();
       }
     }
   },
@@ -163,8 +178,87 @@ var comms = {
       if($("#xfer-anim").is(":checked") == false && $("#xfer-text").is(":checked") == false) {
         alert("Não há nada selecionado para baixar!");
       } else {
-        // TODO
+        console.log("asking for dump");
+        comms.dumpFound = false;
+        comms.receiving = true;
+        comms.dump = [];
+        serial.registerReadCallback(comms.receive);
+        serial.write("D");
       }
+    }
+  },
+  
+  // quando recebe algo da serial
+  receive: function(dump) {
+    if(comms.receiving == true) {
+      var data = new Uint8Array(dump);
+      var array = [].slice.call(data);
+      comms.dump = comms.dump.concat(array);
+      comms.prepareDump();
+      console.log(dump);
+      console.log(data);
+    }
+  },
+  
+  prepareDump: function() {
+    /*if(comms.dumpFound == false) {
+      // trim anything before 'D'
+      var index = comms.dump.findIndex(function(e) {
+        return e == 'D'.charCodeAt(0);
+      });
+      if(index > -1) {
+        comms.dump.slice(index);
+        comms.dumpFound = true;
+      }
+    } else {*/
+      // trigger when got everything
+      // everything: 'D' + frames + speed + strlen + data(frames*8) + str(strlen)
+      if(comms.dump.length >= 4) {
+        widgets.frameCount = comms.dump[1];
+        widgets.speed = comms.dump[2];
+        var strLength = comms.dump[3];
+        var expectedLength = (widgets.frameCount * 8) + strLength + 4;
+        if(comms.dump.length >= expectedLength) comms.parseDump();
+      }
+    //}
+  },
+  
+  parseDump: function() {
+    comms.receiving = false;
+    
+    // parse anim
+    if($("#xfer-anim").is(":checked") == true) {
+      // clear old anim
+      for(i = 1; i < 15; i++) {
+        draw.frames[i] = {};
+      }
+      
+      // convert bin to draw format
+      for(var i = 0; i < widgets.frameCount; i++) {
+        var offset = 4 + (i*8);
+        for(var y = 0; y < 8; y++) {
+          var dy = pad(y+1,2);
+          var line = pad(comms.dump[offset + y].toString(2), 8);
+          draw.frames[i] = {};
+          for(var x = 0; x < 8; x++) {
+            if(line[x] == "1") {
+              var dx = pad(x+1,2);
+              draw.frames[i+1][dy + dx] = true;
+            }
+          }
+        }
+      }
+      widgets.updateDraw();
+    }    
+    
+    // parse msg
+    if($("#xfer-text").is(":checked") == true) {
+      var strOffset = 4 + (widgets.frameCount * 8);
+      var strLength = comms.dump[3];
+      var msgBytes = comms.dump.slice(strOffset, strOffset+strLength);
+      widgets.msg = String.fromCharCode.apply(String, msgBytes);
+      widgets.wrap = false;
+      widgets.updateText();
     }
   }
 }
@@ -203,8 +297,8 @@ var draw = {
   // função chamada quando desliza sobre um pixel
   slidePixel: function(e) {
     if(draw.drawStatus == true) {
-      var xPos = e.originalEvent.touches[0].pageX;
-      var yPos = e.originalEvent.touches[0].pageY;
+      var xPos = e.originalEvent.touches[0].clientX;
+      var yPos = e.originalEvent.touches[0].clientY;
       var element = document.elementFromPoint(xPos,yPos);
       if($(element).hasClass('pixel') == true) {
         if(draw.state == true) {
