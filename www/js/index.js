@@ -94,14 +94,14 @@ var widgets = {
       if(frame.hasOwnProperty(id))
         $('#'+id).addClass('on').removeClass('off');
         
-    $('#anim-frame-count').val(widgets.frameCount).slider('refresh');
-    $('#anim-speed').val(widgets.speed).slider('refresh');
+    $('#anim-frame-count').val(widgets.frameCount).slider('refresh').change();
+    $('#anim-speed').val(widgets.speed).slider('refresh').change();
   },
   
   // atualiza textbox ao carregar mensagem
   updateText: function() {
     $("#text-msg").val(widgets.msg);
-    $("#text-wrap").prop('checked', widgets.wrap).checkboxradio('refresh');
+    //$("#text-wrap").prop('checked', widgets.wrap).checkboxradio('refresh');
   }
 }
 
@@ -214,9 +214,9 @@ var comms = {
       // trigger when got everything
       // everything: 'D' + frames + speed + strlen + data(frames*8) + str(strlen)
       if(comms.dump.length >= 4) {
-        widgets.frameCount = comms.dump[1];
-        widgets.speed = comms.dump[2];
-        var strLength = comms.dump[3];
+        widgets.frameCount = parseInt(comms.dump[1]+'',16);
+        widgets.speed = parseInt(comms.dump[2]+'',16);
+        var strLength = parseInt(comms.dump[3]+'',16);
         var expectedLength = (widgets.frameCount * 8) + strLength + 4;
         if(comms.dump.length >= expectedLength) comms.parseDump();
       }
@@ -239,7 +239,6 @@ var comms = {
         for(var y = 0; y < 8; y++) {
           var dy = pad(y+1,2);
           var line = pad(comms.dump[offset + y].toString(2), 8);
-          draw.frames[i] = {};
           for(var x = 0; x < 8; x++) {
             if(line[x] == "1") {
               var dx = pad(x+1,2);
